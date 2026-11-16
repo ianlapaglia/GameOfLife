@@ -1,6 +1,5 @@
 """
 Authors: Amy Perez
-Date: 20 November, 2026
 Description: Interactive cellular automaton with board configuration, B/S rules,
 randomization, pause/continue, and JSON save/load.
 """
