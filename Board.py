@@ -4,6 +4,7 @@ Description: Cell and Board class for interactive cellular automaton with altera
 """
 
 class Cell:
+    #True means alive, and False means dead
     def __init__(self, state: bool = False):
         self.state = bool(state)
 
@@ -18,23 +19,25 @@ class Cell:
 
 
 class Board:
-    def __init__(self, rows: int, columns: int):
+    def __init__(self, rows: int = 10, columns: int = 20):
         if rows < 1 or columns < 1:
             raise ValueError("Board dimensions must be positive.")
 
-        self.rows, self.columns = rows, columns
-        self.BSRules = ("3", "23")
-        self.matrix = [[Cell() for _ in range(columns)] for _ in range(rows)]
+        self.rows = int(rows)
+        self.columns = int(columns)
+        self.BSRules = {"born": {3}, "survive": {2,3}}
+        self.matrix = [[Cell(False) for _ in range(self.columns)] for _ in range(self.rows)]
 
     def calculateNeighbors(self, row: int, column: int) -> int:
         count = 0
-        for dr in (-1, 0, 1):
-            for dc in (-1, 0, 1):
-                if dr == 0 and dc == 0:
+        for row_offset in (-1, 0, 1):
+            for column_offset in (-1, 0, 1):
+                if row_offset == 0 and column_offset == 0:
                     continue
-                r, c = row + dr, column + dc
-                if 0 <= r < self.rows and 0 <= c < self.columns:
-                    if self.matrix[r][c].getState():
+                neighbor_row = row + row_offset
+                neighbor_column = column + column_offset
+                if (0 <= neighbor_row < self.rows and 0 <= neighbor_column < self.columns):
+                    if self.matrix[neighbor_row][neighbor_column].getState():
                         count += 1
         return count
 
@@ -53,5 +56,6 @@ class Board:
             return False
 
     def toggleCell(self, row: int, column: int) -> None:
-        if 0 <= row < self.rows and 0 <= column < self.columns:
-            self.matrix[row][column].toggleCell()
+        if not 0 <= row < self.rows and 0 <= column < self.columns:
+            return
+        self.matrix[row][column].toggleCell()
