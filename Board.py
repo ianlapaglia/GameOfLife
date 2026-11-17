@@ -1,5 +1,5 @@
 """
-Authors: Amy Perez
+Authors: Amy Perez, Jacob McFadden
 Description: Interactive cellular automaton with board configuration, B/S rules,
 randomization, pause/continue, and JSON save/load.
 """
@@ -43,6 +43,20 @@ class Board:
                     if self.matrix[r][c].getState():
                         count += 1
         return count
+
+    def getNextState(self, row, column, neighbors) -> bool:
+        currentState = self.matrix[row][column].getState()
+        if currentState :
+            #to separate "23" into 2 and 3
+            for char in self.BSRules[1]:
+                if int(char) ==neighbors :
+                    return True
+            return False
+        else :
+            for char in self.BSRules[0]:
+                if int(char) == neighbors :
+                    return True
+            return False
 
     def toggleCell(self, row: int, column: int) -> None:
         if 0 <= row < self.rows and 0 <= column < self.columns:
