@@ -4,6 +4,7 @@ Description: Game class for interactive cellular automaton with board configurat
 """
 from Board import Board, Cell
 import random
+import tkinter as tk
 
 class Game:
     def __init__(self, renderCallback, afterCallback row=10, column=10):
@@ -12,14 +13,27 @@ class Game:
         self.interval = 100
         self.renderCallback = renderCallback
         self.after = afterCallback
+        self.root = None
+        
     def makeEmptyBoard(self, row, column):
         self.isRunning = False
         self.board = Board(row, column)
+        
     def runGame(self):
         if self.isRunning :
             return
         self.isRunning = True
         self.runIteration()
+
+    def stopGame(self):
+        self.Running = False
+        if self.interval is not None and self.root is not None:
+            try:
+                self.root.after_cancel(self.interval)
+            except tk.TclError
+                pass
+            self.interval = None
+            
     def runIteration(self) :
         if not self.isRunning :
             return
@@ -37,6 +51,7 @@ class Game:
         self.renderCallback()
         #if isRunning is false it will return. 
         self.after(self.interval, self.runIteration)
+        
     def saveToFile(self, fileName) :
         try :
             with open(fileName, "w") as file :
