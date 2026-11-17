@@ -1,13 +1,7 @@
 """
 Authors: Amy Perez, Jacob McFadden
-Description: Interactive cellular automaton with board configuration, B/S rules,
-randomization, pause/continue, and JSON save/load.
+Description: Cell and Board class for interactive cellular automaton with alterable states, neighbor calculation, and next state calculation
 """
-
-import json
-import random
-import tkinter as tk
-from tkinter import filedialog, messagebox
 
 class Cell:
     def __init__(self, state: bool = False):
