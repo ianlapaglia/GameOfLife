@@ -15,8 +15,8 @@ class UserInterface:
 
         settings = tk.Frame(root, padx=8, pady=8)
         settings.pack()
-        self.rowsEntry = self._entry(settings, 'Rows', '40', 0)
-        self.columnsEntry = self._entry(settings, 'Columns', '40', 2)
+        self.rowsEntry = self._entry(settings, 'Rows', '10', 0)
+        self.columnsEntry = self._entry(settings, 'Columns', '10', 2)
         self.tickEntry = self._entry(settings, 'Tick (ms)', '100', 4)
         self.cellEntry = self._entry(settings, 'Cell size', '18', 6)
         self.bornEntry = self._entry(settings, 'Born', '3', 8)
