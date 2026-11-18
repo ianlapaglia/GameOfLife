@@ -3,7 +3,6 @@
 
 import tkinter as tk
 from tkinter import messagebox, filedialog
-#use GameOfLife.py along with the UI
 from game import game
 
 class UserInterface:
