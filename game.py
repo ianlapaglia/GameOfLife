@@ -14,10 +14,17 @@ class Game:
         self.renderCallback = renderCallback
         self.after = afterCallback
         self.root = None
+        self._scheduled = None
+
+    def render(self):
+        # An optional callback permits model testing without a display.
+        if self.renderCallback is not None:
+            self.renderCallback()
         
     def makeEmptyBoard(self, row, column):
-        self.isRunning = False
+        self.stopGame()
         self.board = Board(row, column)
+        self.render()
         
     def runGame(self):
         if self.isRunning :
@@ -27,12 +34,13 @@ class Game:
 
     def stopGame(self):
         self.Running = False
-        if self.interval is not None and self.root is not None:
+        if self._scheduled and self.root is not None:
             try:
-                self.root.after_cancel(self.interval)
+                self.root.after_cancel(self._scheduled)
             except tk.TclError
                 pass
             self.interval = None
+        self._scheduled = None
             
     def runIteration(self) :
         if not self.isRunning :
@@ -44,13 +52,15 @@ class Game:
                 neighbors = self.board.calculateNeighbors(row, column)
                 newRow.append(self.board.getNextState(row, column, neighbors))
             newMatrix.append(newRow)
-        
+
+        # Apply states simultaneously: earlier changes must not affect later counts.
         for row in range(self.board.rows):
             for column in range(self.board.columns):
                 self.board.matrix[row][column].setState(newMatrix[row][column])
-        self.renderCallback()
+        self.render()
         #if isRunning is false it will return. 
-        self.after(self.interval, self.runIteration)
+        if self.isRunning and self.after is not None:
+            self._scheduled = self.after(self.interval, self.runIteration)
         
     def saveToFile(self, fileName) :
         try :
@@ -68,10 +78,10 @@ class Game:
         try :
             with open(fileName, "r") as file :
                 data = file.read().split()
-                self.board.rows = data[0]
-                self.board.columns = data[1]
+                rows = data[0]
+                columns = data[1]
                 self.board.BSRules = (data[2], data[3])
-                states = data[3]
+
                 if len(states) == rows*columns :
                     for row in range(self.board.rows) :
                         for column in range(self.board.columns) :
