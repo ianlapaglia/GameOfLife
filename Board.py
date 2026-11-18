@@ -8,10 +8,10 @@ class Cell:
     def __init__(self, state: bool = False):
         self.state = bool(state)
 
-    def toggleCell(self) -> None:
+    def toggleCell(self):
         self.state = not self.state
 
-    def setState(self, newState: bool) -> None:
+    def setState(self, newState: bool):
         self.state = bool(newState)
 
     def getState(self) -> bool:
@@ -19,16 +19,16 @@ class Cell:
 
 
 class Board:
-    def __init__(self, rows: int = 10, columns: int = 20):
-        if rows < 1 or columns < 1:
-            raise ValueError("Board dimensions must be positive.")
+    def __init__(self, rows: int = 30, columns: int = 40):
+        if not 1 <= rows <= 100 or not 1 <= columns <= 100:
+            raise ValueError("Rows and columns must be between 1 and 100.")
+        self.rows, self.columns = rows, columns
+        self.BSRule = ({3}, {2, 3})  # B3/S23 by default
+        self.matrix = [[Cell() for _ in range(columns)] for _ in range(rows)]
 
-        self.rows = int(rows)
-        self.columns = int(columns)
-        self.BSRules = {"born": {3}, "survive": {2,3}}
-        self.matrix = [[Cell(False) for _ in range(self.columns)] for _ in range(self.rows)]
-
+    
     def calculateNeighbors(self, row: int, column: int) -> int:
+        #Count the eight neighboring positions; edges do not wrap
         count = 0
         for row_offset in (-1, 0, 1):
             for column_offset in (-1, 0, 1):
@@ -49,13 +49,14 @@ class Board:
                 if int(char) ==neighbors :
                     return True
             return False
-        else :
+        else:
             for char in self.BSRules[0]:
                 if int(char) == neighbors :
                     return True
             return False
 
-    def toggleCell(self, row: int, column: int) -> None:
+    def toggleCell(self, row: int, column: int) -> bool:
         if not 0 <= row < self.rows and 0 <= column < self.columns:
-            return
+            return False
         self.matrix[row][column].toggleCell()
+        return True
