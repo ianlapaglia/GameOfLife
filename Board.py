@@ -23,7 +23,7 @@ class Board:
         if not 1 <= rows <= 100 or not 1 <= columns <= 100:
             raise ValueError("Rows and columns must be between 1 and 100.")
         self.rows, self.columns = rows, columns
-        self.BSRule = ({3}, {2, 3})  # B3/S23 by default
+        self.BSRule = ("3", "23")# B3/S23 by default
         self.matrix = [[Cell() for _ in range(columns)] for _ in range(rows)]
 
     
@@ -45,12 +45,12 @@ class Board:
         currentState = self.matrix[row][column].getState()
         if currentState :
             #to separate "23" into 2 and 3
-            for char in self.BSRules[1]:
+            for char in self.BSRule[1]:
                 if int(char) ==neighbors :
                     return True
             return False
         else:
-            for char in self.BSRules[0]:
+            for char in self.BSRule[0]:
                 if int(char) == neighbors :
                     return True
             return False
