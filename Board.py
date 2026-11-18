@@ -1,6 +1,7 @@
 """
 Authors: Amy Perez, Jacob McFadden
 Description: Cell and Board class for interactive cellular automaton with alterable states, neighbor calculation, and next state calculation
+Date: Nov 2026
 """
 
 class Cell:
@@ -19,8 +20,8 @@ class Cell:
 
 
 class Board:
-    def __init__(self, rows: int = 30, columns: int = 40):
-        if not 1 <= rows <= 100 or not 1 <= columns <= 100:
+    def __init__(self, rows: int = 40, columns: int = 40):
+        if not 40 <= rows <= 100 or not 40 <= columns <= 100:
             raise ValueError("Rows and columns must be between 1 and 100.")
         self.rows, self.columns = rows, columns
         self.BSRule = ("3", "23")# B3/S23 by default
