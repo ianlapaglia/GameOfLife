@@ -1,5 +1,8 @@
-#Authors: Amy Perez,
-#Description: Interactive cellular automaton with board configuration, B/S rules, randomization, pause/continue, and JSON save/load.
+"""
+Authors: Amy Perez,
+Description: Interactive cellular automaton with board configuration, B/S rules, randomization, pause/continue, and JSON save/load.
+Date: Nov 2026
+"""
 
 import tkinter as tk
 from tkinter import messagebox, filedialog
