@@ -6,7 +6,7 @@ Date: Nov 2026
 
 import tkinter as tk
 from tkinter import messagebox, filedialog
-from game import game
+from game import Game
 
 class UserInterface:
     def __init__(self, root: tk.Tk):
