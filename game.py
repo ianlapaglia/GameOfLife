@@ -1,6 +1,7 @@
 """
 Authors: Jacob McFadden,
 Description: Game class for interactive cellular automaton with board configuration, B/S rules, randomization, pause/continue and save/load.
+Date: Nov 2026
 """
 from Board import Board, Cell
 import random
