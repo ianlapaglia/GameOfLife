@@ -1,5 +1,5 @@
 """
-Authors: Amy Perez,
+Authors: Amy Perez, Olivia Mott
 Description: Interactive cellular automaton with board configuration, B/S rules, randomization, pause/continue, and JSON save/load.
 Date: Nov 2026
 """
@@ -12,41 +12,59 @@ class UserInterface:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title('Game of Life')
+        self.backgroundColor = '#1e3c72'  # dark blue
+        self.textColor = 'white'
+        self.root.configure(bg=self.backgroundColor)
         self.cellSize = 18
         self.game = Game(renderCallback=self.render, afterCallback=root.after)
         self.game.root = root
 
-        settings = tk.Frame(root, padx=8, pady=8)
-        settings.pack()
-        self.rowsEntry = self._entry(settings, 'Rows', '10', 0)
-        self.columnsEntry = self._entry(settings, 'Columns', '10', 2)
-        self.tickEntry = self._entry(settings, 'Tick (ms)', '100', 4)
-        self.cellEntry = self._entry(settings, 'Cell size', '18', 6)
-        self.bornEntry = self._entry(settings, 'Born', '3', 8)
-        self.surviveEntry = self._entry(settings, 'Survive', '23', 10)
+        self.settings = tk.Frame(root, padx=8, pady=8, bg=self.backgroundColor)
+        self.rowsEntry = self._entry(self.settings, 'Rows', '10', 0)
+        self.columnsEntry = self._entry(self.settings, 'Columns', '10', 2)
+        self.tickEntry = self._entry(self.settings, 'Tick (ms)', '100', 4)
+        self.cellEntry = self._entry(self.settings, 'Cell size', '18', 6)
+        self.bornEntry = self._entry(self.settings, 'Born', '3', 8)
+        self.surviveEntry = self._entry(self.settings, 'Survive', '23', 10)
 
-        controls = tk.Frame(root, padx=8, pady=4)
-        controls.pack()
-        self.playButton = tk.Button(controls, text='Play', command=self.playToggleOnClick)
-        self.playButton.pack(side=tk.LEFT)
+        self.canvas = tk.Canvas(root, bg='white', highlightthickness=0)
+        self.canvas.bind('<Button-1>', self.handleClick)
+
+        self.controls = tk.Frame(root, padx=8, pady=12, bg=self.backgroundColor)
+        self.playButton = tk.Button(self.controls, text='Play', command=self.playToggleOnClick)
+        self.playButton.pack(side=tk.LEFT, padx=4)
         for label, callback in [('Set', self.setOnClick),
                                 ('Randomize', self.randomizeOnClick),
                                 ('Clear', self.clearOnClick),
                                 ('Save', self.saveOnClick),
                                 ('Load', self.loadOnClick),
                                 ('Quit', self.quitOnClick)]:
-            tk.Button(controls, text=label, command=callback).pack(side=tk.LEFT)
-        self.canvas = tk.Canvas(root, bg='white', highlightthickness=0)
-        self.canvas.pack(padx=8, pady=8)
-        self.canvas.bind('<Button-1>', self.handleClick)
+            tk.Button(self.controls, text=label, command=callback).pack(side=tk.LEFT, padx=4)
+        
+        self._organize_layout()
         root.protocol('WM_DELETE_WINDOW', self.quitOnClick)
         self.render()
 
+    def _organize_layout(self):
+        # If board has more than 30 rows, place buttons between settings and canvas.
+        # With many rows, the canvas grows tall and buttons at the bottom would be off-screen.
+        rows = self.game.board.rows
+        self.settings.pack_forget()
+        self.controls.pack_forget()
+        self.canvas.pack_forget()
+        
+        self.settings.pack()
+        if rows > 30:
+            self.controls.pack()
+        self.canvas.pack(padx=8, pady=8)
+        if rows <= 30:
+            self.controls.pack()
+
     def _entry(self, parent, label, value, column):
-        tk.Label(parent, text=label).grid(row=0, column=column)
+        tk.Label(parent, text=label, bg=self.backgroundColor, fg=self.textColor).grid(row=0, column=column)
         entry = tk.Entry(parent, width=5)
         entry.insert(0, value)
-        entry.grid(row=0, column=column + 1)
+        entry.grid(row=0, column=column + 1, padx=4)
         return entry
 
     def render(self):
@@ -92,6 +110,7 @@ class UserInterface:
             self.game.interval = tick
             self.cellSize = size
             self.playButton.config(text='Play')
+            self._organize_layout()
             self.render()
         except ValueError as error:
             messagebox.showerror('Invalid settings', str(error))
